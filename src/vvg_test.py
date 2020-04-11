@@ -84,7 +84,7 @@ history = model.fit_generator(
     train_generator,
     steps_per_epoch=train_generator.n / batch_size,
     validation_data=test_generator,
-    epochs=10)
+    epochs=25)
 
 model.save('../model/covid_vgg16.h5')
 
