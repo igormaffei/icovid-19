@@ -1,0 +1,16 @@
+Imagens para treinamento (80%)
+
+COVID-19 = 219 imagens -------- 80% = 176 imagens ---------- 50% dos 80% = 88 imagens
+
+NORMAL = 1341 imagens --------- 80% = 1073 imagens --------- 50% dos 80% = 536 imagens
+
+Total= 624 imagens
+
+
+Imagens para teste (20%)
+
+COVID-19 = 219 imagens --------- 20% = 44 imagens ----------- 50% dos 20% = 22 imagens
+
+NORMAL = 1341 imagens --------- 20% = 268 imagens --------- 50% dos 20% = 134 imagens
+
+Total= 156 imagens
