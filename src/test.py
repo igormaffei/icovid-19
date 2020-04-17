@@ -1,7 +1,10 @@
 import os
 
-covid_dir = os.path.join('../trainning/images/covid19')
-notcovid_dir = os.path.join('../trainning/images/notcovid19')
+covid_dir = os.path.join('../img_old/trainning/covid19')
+notcovid_dir = os.path.join('../img_old/trainning/notcovid19')
+
+#covid_dir = os.path.join('../img_resize/trainning/covid19')
+#notcovid_dir = os.path.join('../img_resize/trainning/not_covid19')
 
 print('total training covid-19 images:', len(os.listdir(covid_dir)))
 print('total training not covid-19 images:', len(os.listdir(notcovid_dir)))
@@ -14,7 +17,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Activation
 from keras_preprocessing.image import ImageDataGenerator
 
-TRAINING_DIR = "../trainning/images/"
+TRAINING_DIR = "../img_old/trainning/"
 training_datagen = ImageDataGenerator(
     rescale=1. / 255,
     rotation_range=40,
@@ -25,7 +28,7 @@ training_datagen = ImageDataGenerator(
     horizontal_flip=True,
     fill_mode='nearest')
 
-VALIDATION_DIR = "../trainning/images/"
+VALIDATION_DIR = "../img_old/test/"
 validation_datagen = ImageDataGenerator(rescale=1. / 255)
 
 train_generator = training_datagen.flow_from_directory(
@@ -43,17 +46,26 @@ validation_generator = validation_datagen.flow_from_directory(
 
 model = tf.models.Sequential([
      # This is the first convolution
-    tf.layers.Conv2D(64, (3, 3), activation='relu', input_shape=(224, 224, 3)),
+    tf.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(224, 224, 3)),
     tf.layers.MaxPooling2D(2, 2),
-    tf.layers.Dropout(0.25),
+    tf.layers.Dropout(0.15),
+    # The second convolution
+    tf.layers.Conv2D(32, (3, 3), activation='relu'),
+    tf.layers.MaxPooling2D(2, 2),
+    tf.layers.Dropout(0.15),
     # The second convolution
     tf.layers.Conv2D(64, (3, 3), activation='relu'),
     tf.layers.MaxPooling2D(2, 2),
-    tf.layers.Dropout(0.25),
-    # The third convolution
-    tf.layers.Conv2D(128, (3, 3), activation='relu'),
+    tf.layers.Dropout(0.20),
+    # The second convolution
+    tf.layers.Conv2D(64, (3, 3), activation='relu'),
+    tf.layers.MaxPooling2D(2, 2),
+    tf.layers.Dropout(0.20),
+    # The second convolution
+    tf.layers.Conv2D(128, (3, 3), activation='relu', ),
     tf.layers.MaxPooling2D(2, 2),
     tf.layers.Dropout(0.25),
+    # The third convolution
     # The fourth convolution
     tf.layers.Conv2D(128, (3, 3), activation='relu'),
     tf.layers.MaxPooling2D(2, 2),
@@ -66,30 +78,55 @@ model = tf.models.Sequential([
     tf.layers.Dense(2, activation='softmax')
 ])
 
+# model = tf.models.Sequential([
+#      # This is the first convolution
+#     tf.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(224, 224, 3)),
+#     tf.layers.MaxPooling2D(2, 2),
+#     tf.layers.Dropout(0.25),
+#     # The second convolution
+#     tf.layers.Conv2D(64, (3, 3), activation='relu'),
+#     tf.layers.MaxPooling2D(2, 2),
+#     tf.layers.Dropout(0.25),
+#     # The third convolution
+#     tf.layers.Conv2D(64, (3, 3), activation='relu'),
+#     tf.layers.MaxPooling2D(2, 2),
+#     tf.layers.Dropout(0.25),
+#     # The fourth convolution
+#     tf.layers.Conv2D(128, (3, 3), activation='relu'),
+#     tf.layers.MaxPooling2D(2, 2),
+#     tf.layers.Dropout(0.25),
+#     # Flatten the results to feed into a DNN
+#     tf.layers.Flatten(),
+#     #tf.layers.Dropout(0.5),
+#     # 512 neuron hidden layer
+#     tf.layers.Dense(512, activation='relu'),
+#     tf.layers.Dense(2, activation='softmax')
+# ])
+
 model.summary()
 
 #model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 model.compile(loss='sparse_categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
-#model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+#model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
 
 history = model.fit(train_generator, epochs=25, validation_data=validation_generator, verbose=1)
 
-model.save("../data/covid19.h5")
+model.save("../model/covid19.h5")
 
 print("model saved...")
 
 import matplotlib.pyplot as plt
 
 acc = history.history['accuracy']
-#val_acc = history.history['val_accuracy']
+val_acc = history.history['val_accuracy']
 loss = history.history['loss']
-#val_loss = history.history['val_loss']
+val_loss = history.history['val_loss']
 
 epochs = range(len(acc))
 
 plt.plot(epochs, acc, 'r', label='Training accuracy')
-#plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
+plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
 plt.title('Training and validation accuracy')
 plt.legend(loc=0)
 plt.figure()
