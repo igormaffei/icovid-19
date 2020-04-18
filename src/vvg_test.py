@@ -3,8 +3,8 @@ import os
 #covid_dir = os.path.join('../img_old/trainning/covid19')
 #notcovid_dir = os.path.join('../img_old/trainning/notcovid19')
 
-covid_dir = os.path.join('../img_new/trainning/covid19')
-notcovid_dir = os.path.join('../img_new/trainning/not_covid19')
+covid_dir = os.path.join('../img_new2/trainning/covid19')
+notcovid_dir = os.path.join('../img_new2/trainning/not_covid19')
 
 print('total training covid-19 images:', len(os.listdir(covid_dir)))
 print('total training not covid-19 images:', len(os.listdir(notcovid_dir)))
@@ -14,8 +14,8 @@ from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 import matplotlib.pyplot as plt
 
-train_path = '../img_new/trainning/'
-test_path = '../img_new/test/'
+train_path = '../img_new2/trainning/'
+test_path = '../img_new2/test/'
 batch_size = 16
 image_size = 224
 
@@ -65,8 +65,8 @@ model.add(base_model)
 
 # # Add new layers
 model.add(Flatten())
-model.add(Dense(4096, activation='relu'))
-model.add(Dense(4096, activation='relu'))
+model.add(Dense(1024, activation='relu'))
+model.add(Dense(1024, activation='relu'))
 model.add(Dense(2, activation='softmax'))
 
 # # Show a summary of the model. Check the number of trainable parameters
